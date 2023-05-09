@@ -5,6 +5,7 @@ using countMastersTest.constants;
 using countMastersTest.infrastructure;
 using countMastersTest.infrastructure.input;
 using DG.Tweening;
+using MyBox;
 using UnityEngine;
 using UnityEngine.Pool;
 using Zenject;
@@ -20,6 +21,7 @@ namespace countMastersTest.character
         [SerializeField] private float _moveSpeedSide = 5;
         [SerializeField] private float _maxUnitCircleRadius = 4;
         [SerializeField, Min(1)] private int _startUnitCount = 1;
+        [SerializeField] private float _roadSize;
 
         private ObjectPool<Unit> _unitPool;
         private List<Unit> _units;
@@ -71,8 +73,10 @@ namespace countMastersTest.character
         {
             Vector3 moveDirection = Vector3.zero;
 
-            moveDirection.x = swipe.direction.x * _moveSpeedSide * Time.deltaTime;
+            if (transform.position.x <= -_roadSize && swipe.direction.x < 0) return;
+            if (transform.position.x >= _roadSize && swipe.direction.x > 0) return;
 
+            moveDirection.x = swipe.direction.x * _moveSpeedSide * Time.deltaTime;
             _characterController.Move(moveDirection);
         }
 
@@ -153,6 +157,12 @@ namespace countMastersTest.character
             {
                 unit.playAnimation(AnimationType.Idle);
             }
+        }
+
+        [ButtonMethod]
+        private void addUnits()
+        {
+            addUnit(10);
         }
     }
 }
