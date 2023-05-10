@@ -36,11 +36,6 @@ namespace countMastersTest.infrastructure.input
                 detectSwipe();
             }
 
-            if (Input.GetMouseButtonUp(0))
-            {
-                _fingerDownPosition = Input.mousePosition;
-                detectSwipe();
-            }
         }
 
         
@@ -60,12 +55,6 @@ namespace countMastersTest.infrastructure.input
             }
 
             if (!_detectSwipeOnlyAfterRelease && touch.phase == TouchPhase.Moved)
-            {
-                _fingerDownPosition = touch.position;
-                detectSwipe();
-            }
-
-            if (touch.phase == TouchPhase.Ended)
             {
                 _fingerDownPosition = touch.position;
                 detectSwipe();

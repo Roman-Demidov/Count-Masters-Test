@@ -390,13 +390,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
+  m_Height: 4
   m_Radius: 0.07
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 2, z: 0}
 --- !u!114 &7589401740825291667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,7 +415,6 @@ MonoBehaviour:
   _pfUnit: {fileID: 4438294925348059320, guid: 5b6678af6b8964046b8f0e26c7df9485, type: 3}
   _pfHitParticle: {fileID: 19845262, guid: fdac75e990da47649b31f10049c400b0, type: 3}
   _moveSpeedForward: 2
-  _moveSpeedSide: 6
-  _moveSmoothing: 350
+  _moveSpeedSide: 3.5
   _maxUnitCircleRadius: 4
   _startUnitCount: 1

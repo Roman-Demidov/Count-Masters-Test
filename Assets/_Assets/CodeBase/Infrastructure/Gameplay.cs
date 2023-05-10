@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cinemachine;
 using countMastersTest.character;
 using countMastersTest.infrastructure;
@@ -39,6 +39,7 @@ namespace countMastersTest
             _startScreen.show();
             _startScreen.onPlay += startPlay;
 
+            Application.targetFrameRate = 30;
             enableLevel();
         }
 

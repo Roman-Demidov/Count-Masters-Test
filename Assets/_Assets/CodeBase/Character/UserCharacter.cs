@@ -22,7 +22,6 @@ namespace countMastersTest.character
         [SerializeField] private ParticleSystem _pfHitParticle;
         [SerializeField] private float _moveSpeedForward = 2;
         [SerializeField] private float _moveSpeedSide = 5;
-        [SerializeField] private float _moveSmoothing = 1;
         [SerializeField] private float _maxUnitCircleRadius = 4;
         [SerializeField, Min(1)] private int _startUnitCount = 1;
 
@@ -95,7 +94,6 @@ namespace countMastersTest.character
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log(other.name);
             if (other.TryGetComponent(out Gates gates))
             {
                 gateAction(gates);
@@ -132,7 +130,6 @@ namespace countMastersTest.character
             if (transform.position.x >= size && swipe.direction.x > 0) return;
 
             moveDirection.x = swipe.direction.x * _moveSpeedSide * Time.deltaTime;
-            moveDirection.x = math.lerp(0, moveDirection.x, Time.deltaTime * _moveSmoothing);
             _characterController.Move(moveDirection);
         }
 
