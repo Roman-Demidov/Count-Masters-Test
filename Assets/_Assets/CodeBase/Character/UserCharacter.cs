@@ -1,39 +1,45 @@
 using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
-using countMastersTest.constants;
 using countMastersTest.infrastructure;
+using countMastersTest.infrastructure.constants;
 using countMastersTest.infrastructure.input;
+using countMastersTest.interactiveObjects.gate;
 using DG.Tweening;
 using MyBox;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
-using Zenject;
 
 namespace countMastersTest.character
 {
     public class UserCharacter : MonoBehaviour
     {
         [SerializeField] private CharacterController _characterController;
+        [SerializeField] private TextMeshProUGUI _unitCountText;
         [SerializeField] private Transform _unitContainer;
         [SerializeField] private Unit _pfUnit;
+        [SerializeField] private ParticleSystem _pfHitParticle;
         [SerializeField] private float _moveSpeedForward = 2;
         [SerializeField] private float _moveSpeedSide = 5;
         [SerializeField] private float _maxUnitCircleRadius = 4;
         [SerializeField, Min(1)] private int _startUnitCount = 1;
         [SerializeField] private float _roadSize;
 
-        private ObjectPool<Unit> _unitPool;
+        public ObjectPool<Unit> _unitPool;
+        public ObjectPool<ParticleSystem> _hitParticlePool;
         private List<Unit> _units;
-        private Game _game;
         private Vector3 _moveDirection;
         private IInputService _input;
 
-        [Inject]
-        private void constructor(Game game, IInputService inputService)
+        public event Action onFinish;
+        public event Action onDeath;
+        public event Action<Transform> onPickedCoin;
+        private bool _canMove;
+
+        public void init(IInputService inputService)
         {
-            _game = game;
             _input = inputService;
+            _canMove = false;
         }
 
         private void OnValidate()
@@ -43,30 +49,57 @@ namespace countMastersTest.character
 
         private void Start()
         {
-            initPool();
+            initUnitPool();
+            initHitParticlePool();
+
             initUnitList();
             _input.onSwipe += movement;
 
             addUnit(_startUnitCount);
         }
 
+        private void OnDestroy()
+        {
+            _input.onSwipe -= movement;
+        }
+
+        private void initUnitPool()
+        {
+            _unitPool = new ObjectPool<Unit>(
+                () => Instantiate(_pfUnit),
+                pf => pf.gameObject.SetActive(true),
+                pf => pf.gameObject.SetActive(false),
+                pf => Destroy(pf.gameObject),
+                true, 200, 400);
+        }
+
+        private void initHitParticlePool()
+        {
+            _hitParticlePool = new ObjectPool<ParticleSystem>(
+                () => Instantiate(_pfHitParticle),
+                pf => pf.gameObject.SetActive(true),
+                pf => pf.gameObject.SetActive(false),
+                pf => Destroy(pf.gameObject),
+                true, 200, 400);
+        }
+
         private void Update()
         {
-            if (_game.isPause) return;
+            if (_canMove == false) return;
 
             _moveDirection =  Vector3.forward * (_moveSpeedForward * Time.deltaTime);
 
             _characterController.Move(_moveDirection);
         }
 
-        private void initPool()
+        public void startMove()
         {
-            _unitPool = new ObjectPool<Unit>(
-                () => Instantiate(_pfUnit, _unitContainer),
-                pf => pf.gameObject.SetActive(true),
-                pf => pf.gameObject.SetActive(false),
-                pf => Destroy(pf.gameObject),
-                true, 100, 400);
+            _canMove = true;
+        }
+
+        public void stopMove()
+        {
+            _canMove = false;
         }
 
         private void movement(SwipeData swipe)
@@ -85,10 +118,34 @@ namespace countMastersTest.character
             for (int i = 0; i < value; i++)
             {
                 var unit = _unitPool.Get();
+                unit.transform.parent = _unitContainer;
+                unit.onUnitHitObstacle += returnUnitToPool;
                 _units.Add(unit);
             }
 
+            _unitCountText.text = _units.Count.ToString();
             updateUnitPlacement();
+        }
+
+        private void returnUnitToPool(Unit unit)
+        {
+            var particle = _hitParticlePool.Get();
+            particle.transform.position = unit.transform.position;
+            particle.Play();
+            DOTween.Sequence().AppendInterval(2f).OnComplete(() => _hitParticlePool.Release(particle));
+
+
+            unit.onUnitHitObstacle -= returnUnitToPool;
+            _units.Remove(unit);
+            _unitPool.Release(unit);
+
+            _unitCountText.text = _units.Count.ToString();
+
+            if(_units.Count == 0)
+            {
+                onDeath?.Invoke();
+                stopMove();
+            }
         }
 
         private void updateUnitPlacement()
@@ -96,6 +153,7 @@ namespace countMastersTest.character
             float radius = _units[0].getRadius();
             int index = 0;
             int currentRing = 0;
+            float trigerRadius = 0;
 
             while (index < _units.Count)
             {
@@ -124,10 +182,13 @@ namespace countMastersTest.character
                         index++;
                     }
                 }
+
+                trigerRadius = currentRing * (radius * 2);
                 currentRing++;
             }
 
-            startMove();
+            _characterController.radius = trigerRadius;
+            startMoveUnits();
         }
 
         private void initUnitList()
@@ -143,7 +204,7 @@ namespace countMastersTest.character
             _units = new List<Unit>();
         }
 
-        private void startMove()
+        private void startMoveUnits()
         {
             foreach (var unit in _units)
             {
@@ -151,7 +212,7 @@ namespace countMastersTest.character
             }
         }
 
-        private void stopMove()
+        private void stonMoveUnits()
         {
             foreach (var unit in _units)
             {
@@ -159,10 +220,51 @@ namespace countMastersTest.character
             }
         }
 
-        [ButtonMethod]
-        private void addUnits()
+
+        private void OnTriggerEnter(Collider other)
         {
-            addUnit(10);
+            Debug.Log(other.name);
+            if(other.TryGetComponent(out Gates gates))
+            {
+                gateAction(gates);
+            }
+            else if(other.TryGetComponent(out Coin coin))
+            {
+                coin.hit();
+                onPickedCoin?.Invoke(coin.transform);
+            }
+            else if(other.TryGetComponent(out Finish finish))
+            {
+                stopMove();
+                onFinish?.Invoke();
+            }
+        }
+
+        private void gateAction(Gates gates)
+        {
+            int unitsCount;
+            if (transform.position.x < gates.transform.position.x)
+            {
+                unitsCount = getUnitsCount(gates.getLeftAction());
+            }
+            else
+            {
+                unitsCount = getUnitsCount(gates.getRightAction());
+            }
+            addUnit(unitsCount);
+        }
+
+        public int getUnitsCount(GateSettings gateSettings)
+        {
+            switch (gateSettings.action)
+            {
+                case GateActions.Add:
+                    return gateSettings.value;
+                case GateActions.Multiply:
+                    return (_units.Count * gateSettings.value) - _units.Count;
+            }
+
+            return 0;
         }
     }
 }

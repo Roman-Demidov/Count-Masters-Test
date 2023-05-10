@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace countMastersTest.constants
+namespace countMastersTest.infrastructure.constants
 {
     public enum AnimationType
     {

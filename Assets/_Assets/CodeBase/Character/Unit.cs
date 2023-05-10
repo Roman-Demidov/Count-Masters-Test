@@ -1,5 +1,6 @@
 ﻿using System;
-using countMastersTest.constants;
+using countMastersTest.infrastructure.constants;
+using countMastersTest.interactiveObjects.obstacles;
 using UnityEngine;
 
 namespace countMastersTest.character
@@ -8,6 +9,8 @@ namespace countMastersTest.character
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private float _radius;
+
+        public event Action<Unit> onUnitHitObstacle;
 
         internal float getRadius() => _radius;
 
@@ -28,6 +31,14 @@ namespace countMastersTest.character
                 case AnimationType.Run: _animator.SetFloat(AnimationParametersName.RUN, 1); return;
                 case AnimationType.Death: _animator.SetTrigger(AnimationParametersName.DEATH); return;
                 case AnimationType.Attack: _animator.SetBool(AnimationParametersName.IS_ATTACK, true); return;
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if(other.TryGetComponent(out IObstacle obstacle))
+            {
+                onUnitHitObstacle?.Invoke(this);
             }
         }
     }
