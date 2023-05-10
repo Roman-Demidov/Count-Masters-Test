@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using countMastersTest.character;
-using UnityEditor.Search;
+using countMastersTest.infrastructure.constants;
 using UnityEngine;
 using UnityEngine.Pool;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace countMastersTest.interactiveObjects.obstacles
 {
@@ -57,7 +54,7 @@ namespace countMastersTest.interactiveObjects.obstacles
 
         private void updateUnitPlacement()
         {
-            float radius = _units[0].getRadius();
+            float radius = GameConstants.UNIT_RADIUS;
             int index = 0;
             int currentRing = 0;
 
@@ -94,7 +91,7 @@ namespace countMastersTest.interactiveObjects.obstacles
 
         private void UpdateUnitPlacement()
         {
-            float radius = _units[0].getRadius();
+            float radius = GameConstants.UNIT_RADIUS;
             int index = 0;
             int currentRing = 0;
 

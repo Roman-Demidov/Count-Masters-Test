@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using countMastersTest.ui.tutorial;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;

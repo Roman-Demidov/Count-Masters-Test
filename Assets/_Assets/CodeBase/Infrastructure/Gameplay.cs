@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Cinemachine;
 using countMastersTest.character;
 using countMastersTest.infrastructure;
+using countMastersTest.infrastructure.constants;
 using countMastersTest.infrastructure.data;
 using countMastersTest.infrastructure.input;
 using UnityEngine;
@@ -69,6 +69,8 @@ namespace countMastersTest
         {
             _gameData.level++;
             _gameData.coins += _coinPerLevel;
+
+            DataHandler.save(_gameData, GameConstants.DATA_NAME);
 
             _winPanel.startNextLevel -= startNextLevel;
             _sceneSwitcher.restartScene();

@@ -8,11 +8,8 @@ namespace countMastersTest.character
     public class Unit: MonoBehaviour
     {
         [SerializeField] private Animator _animator;
-        [SerializeField] private float _radius;
 
         public event Action<Unit> onUnitHitObstacle;
-
-        internal float getRadius() => _radius;
 
         public void playAnimation(AnimationType animationType)
         {

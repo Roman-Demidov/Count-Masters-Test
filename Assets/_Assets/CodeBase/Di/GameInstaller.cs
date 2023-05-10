@@ -23,13 +23,13 @@ public class GameInstaller : MonoInstaller
 
         if(SceneManager.GetActiveScene().buildIndex == 0)
         {
-            _sceneSwitcher.GoToNextScene();
+            _sceneSwitcher.goToNextScene();
         }
     }
 
     private GameData getGameData()
     {
-        GameData gameData = DataHandler.Load<GameData>(GameConstants.DATA_NAME);
+        GameData gameData = DataHandler.load<GameData>(GameConstants.DATA_NAME);
 
         if (gameData == null)
         {

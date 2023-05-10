@@ -5,7 +5,7 @@ namespace countMastersTest.infrastructure
 {
     public class SceneSwitcher : MonoBehaviour
     {
-        public void GoToNextScene()
+        public void goToNextScene()
         {
             int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
             int nextSceneIndex = (currentSceneIndex + 1) % SceneManager.sceneCountInBuildSettings;
@@ -18,14 +18,14 @@ namespace countMastersTest.infrastructure
             SceneManager.LoadScene(currentSceneIndex, LoadSceneMode.Single);
         }
 
-        public void GoToPreviousScene()
+        public void goToPreviousScene()
         {
             int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
             int previousSceneIndex = (currentSceneIndex - 1 + SceneManager.sceneCountInBuildSettings) % SceneManager.sceneCountInBuildSettings;
             SceneManager.LoadScene(previousSceneIndex, LoadSceneMode.Single);
         }
 
-        public void GoToScene(int sceneIndex)
+        public void goToScene(int sceneIndex)
         {
             if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
             {
@@ -33,7 +33,7 @@ namespace countMastersTest.infrastructure
             }
         }
 
-        public void GoToScene(string sceneName)
+        public void goToScene(string sceneName)
         {
             SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         }

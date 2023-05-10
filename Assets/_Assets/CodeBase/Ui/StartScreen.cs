@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using countMastersTest.infrastructure.data;
 using countMastersTest.ui.tutorial;
 using TMPro;

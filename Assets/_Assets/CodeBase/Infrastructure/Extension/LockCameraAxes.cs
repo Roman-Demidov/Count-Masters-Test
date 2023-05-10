@@ -2,7 +2,7 @@ using Cinemachine;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace countMastersTest
+namespace countMastersTest.infrastructure.extension
 {
     [AddComponentMenu("")] // Hide in menu
     [ExecuteInEditMode] 

@@ -416,6 +416,6 @@ MonoBehaviour:
   _pfHitParticle: {fileID: 19845262, guid: fdac75e990da47649b31f10049c400b0, type: 3}
   _moveSpeedForward: 2
   _moveSpeedSide: 6
+  _moveSmoothing: 350
   _maxUnitCircleRadius: 4
-  _startUnitCount: 3
-  _roadSize: 2.5
+  _startUnitCount: 1

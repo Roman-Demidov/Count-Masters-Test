@@ -33,13 +33,13 @@ namespace countMastersTest.infrastructure.input
             if (!_detectSwipeOnlyAfterRelease && Input.GetMouseButton(0))
             {
                 _fingerDownPosition = Input.mousePosition;
-                DetectSwipe();
+                detectSwipe();
             }
 
             if (Input.GetMouseButtonUp(0))
             {
                 _fingerDownPosition = Input.mousePosition;
-                DetectSwipe();
+                detectSwipe();
             }
         }
 
@@ -62,46 +62,46 @@ namespace countMastersTest.infrastructure.input
             if (!_detectSwipeOnlyAfterRelease && touch.phase == TouchPhase.Moved)
             {
                 _fingerDownPosition = touch.position;
-                DetectSwipe();
+                detectSwipe();
             }
 
             if (touch.phase == TouchPhase.Ended)
             {
                 _fingerDownPosition = touch.position;
-                DetectSwipe();
+                detectSwipe();
             }
         }
 
-        private void DetectSwipe()
+        private void detectSwipe()
         {
-            if (SwipeDistanceCheckMet())
+            if (swipeDistanceCheckMet())
             {
                 Vector2 direction;
                 direction.y = _fingerDownPosition.y - _fingerUpPosition.y > 0 ? 1 : -1;
                 direction.x = _fingerDownPosition.x - _fingerUpPosition.x > 0 ? 1 : -1;
 
-                SendSwipe(direction, 1);
+                sendSwipe(direction, 1);
 
                 _fingerUpPosition = _fingerDownPosition;
             }
         }
 
-        private bool SwipeDistanceCheckMet()
+        private bool swipeDistanceCheckMet()
         {
-            return VerticalMovementDistance() > _minDistanceForSwipe || HorizontalMovementDistance() > _minDistanceForSwipe;
+            return verticalMovementDistance() > _minDistanceForSwipe || horizontalMovementDistance() > _minDistanceForSwipe;
         }
 
-        private float VerticalMovementDistance()
+        private float verticalMovementDistance()
         {
             return Mathf.Abs(_fingerDownPosition.y - _fingerUpPosition.y);
         }
 
-        private float HorizontalMovementDistance()
+        private float horizontalMovementDistance()
         {
             return Mathf.Abs(_fingerDownPosition.x - _fingerUpPosition.x);
         }
 
-        private void SendSwipe(Vector3 direction, float speed)
+        private void sendSwipe(Vector3 direction, float speed)
         {
             SwipeData swipeData = new SwipeData()
             {

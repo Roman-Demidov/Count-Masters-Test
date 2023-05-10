@@ -7,6 +7,7 @@ using countMastersTest.interactiveObjects.gate;
 using DG.Tweening;
 using MyBox;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -21,9 +22,9 @@ namespace countMastersTest.character
         [SerializeField] private ParticleSystem _pfHitParticle;
         [SerializeField] private float _moveSpeedForward = 2;
         [SerializeField] private float _moveSpeedSide = 5;
+        [SerializeField] private float _moveSmoothing = 1;
         [SerializeField] private float _maxUnitCircleRadius = 4;
         [SerializeField, Min(1)] private int _startUnitCount = 1;
-        [SerializeField] private float _roadSize;
 
         public ObjectPool<Unit> _unitPool;
         public ObjectPool<ParticleSystem> _hitParticlePool;
@@ -92,6 +93,25 @@ namespace countMastersTest.character
             _characterController.Move(_moveDirection);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            Debug.Log(other.name);
+            if (other.TryGetComponent(out Gates gates))
+            {
+                gateAction(gates);
+            }
+            else if (other.TryGetComponent(out Coin coin))
+            {
+                coin.hit();
+                onPickedCoin?.Invoke(coin.transform);
+            }
+            else if (other.TryGetComponent(out Finish finish))
+            {
+                stopMove();
+                onFinish?.Invoke();
+            }
+        }
+
         public void startMove()
         {
             _canMove = true;
@@ -106,10 +126,13 @@ namespace countMastersTest.character
         {
             Vector3 moveDirection = Vector3.zero;
 
-            if (transform.position.x <= -_roadSize && swipe.direction.x < 0) return;
-            if (transform.position.x >= _roadSize && swipe.direction.x > 0) return;
+            float size = (GameConstants.ROAD_WIDTH / 2) - _characterController.radius;
+
+            if (transform.position.x <= -size && swipe.direction.x < 0) return;
+            if (transform.position.x >= size && swipe.direction.x > 0) return;
 
             moveDirection.x = swipe.direction.x * _moveSpeedSide * Time.deltaTime;
+            moveDirection.x = math.lerp(0, moveDirection.x, Time.deltaTime * _moveSmoothing);
             _characterController.Move(moveDirection);
         }
 
@@ -150,7 +173,7 @@ namespace countMastersTest.character
 
         private void updateUnitPlacement()
         {
-            float radius = _units[0].getRadius();
+            float radius = GameConstants.UNIT_RADIUS;
             int index = 0;
             int currentRing = 0;
             float trigerRadius = 0;
@@ -209,34 +232,6 @@ namespace countMastersTest.character
             foreach (var unit in _units)
             {
                 unit.playAnimation(AnimationType.Run);
-            }
-        }
-
-        private void stonMoveUnits()
-        {
-            foreach (var unit in _units)
-            {
-                unit.playAnimation(AnimationType.Idle);
-            }
-        }
-
-
-        private void OnTriggerEnter(Collider other)
-        {
-            Debug.Log(other.name);
-            if(other.TryGetComponent(out Gates gates))
-            {
-                gateAction(gates);
-            }
-            else if(other.TryGetComponent(out Coin coin))
-            {
-                coin.hit();
-                onPickedCoin?.Invoke(coin.transform);
-            }
-            else if(other.TryGetComponent(out Finish finish))
-            {
-                stopMove();
-                onFinish?.Invoke();
             }
         }
 
