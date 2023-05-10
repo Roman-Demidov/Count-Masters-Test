@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8509742716193548623}
   - component: {fileID: -6815087817008099107}
   - component: {fileID: 6705032175714594866}
+  - component: {fileID: -1109556319895507340}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -76,6 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _swipeDetector: {fileID: 6705032175714594866}
+  _sceneSwitcher: {fileID: -1109556319895507340}
 --- !u!114 &6705032175714594866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,4 +91,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _detectSwipeOnlyAfterRelease: 0
-  _minDistanceForSwipe: 5
+  _minDistanceForSwipe: 20
+--- !u!114 &-1109556319895507340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2517649231161805790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 515e5aa21886fab4bb5451c1c99bef35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
