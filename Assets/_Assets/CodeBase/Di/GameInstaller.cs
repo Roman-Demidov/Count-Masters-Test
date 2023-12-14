@@ -29,12 +29,7 @@ public class GameInstaller : MonoInstaller
 
     private GameData getGameData()
     {
-        GameData gameData = DataHandler.load<GameData>(GameConstants.DATA_NAME);
-
-        if (gameData == null)
-        {
-            return new GameData();
-        }
+        GameData gameData = DataHandler.load<GameData>(GameConstants.DATA_NAME) ?? new GameData();
 
         return gameData;
     }

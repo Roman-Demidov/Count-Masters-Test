@@ -11,7 +11,6 @@ namespace countMastersTest
     public class StartScreen : MonoBehaviour
     {
         [SerializeField] private TutorialUI _tutorialUI;
-        [SerializeField] private Button _shopButton;
         [SerializeField] private Button _playButton;
         [SerializeField] private TextMeshProUGUI _coinText;
 

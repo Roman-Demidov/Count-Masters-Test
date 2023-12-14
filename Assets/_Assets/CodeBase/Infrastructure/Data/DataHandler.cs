@@ -30,9 +30,6 @@ public static class DataHandler
             return JsonUtility.FromJson<T>(json);
         }
         else
-        {
-            Debug.LogError("File not found: " + filePath);
             return null;
-        }
     }
 }
